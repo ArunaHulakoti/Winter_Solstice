@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hemisphere Selector</title>
+    <style>
+        body {
+            background-image: url('https://w0.peakpx.com/wallpaper/372/570/HD-wallpaper-earth-from-space-hemisphere-earth-globe-planet.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Hide overflow to prevent scrollbar during snowflake animation */
+            color:white;
+        }
+
+        #menu {
+            text-align: center;
+            margin-top: 20%;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #005f73;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+            animation: float 30s linear infinite;
+        }
+
+        .cloud:before,
+        .cloud:after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+        }
+
+        .cloud:before {
+            width: 60%;
+            height: 60%;
+            top: -20px;
+            left: 20px;
+        }
+
+        .cloud:after {
+            width: 50%;
+            height: 50%;
+            top: 10px;
+            right: 20px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateX(-10vw);
+            }
+            100% {
+                transform: translateX(110vw);
+            }
+        }
+
+        .northern-theme {
+            background-image:url('https://flux-image.com/_next/image?url=https%3A%2F%2Fai.flux-image.com%2Fflux%2Ff7fe990d-585c-4dfb-a865-9ad8846c5376.jpg&w=3840&q=75');
+            background-size: cover;
+            background-position: center;
+            color:white;
+            text-align: center;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative; 
+        }
+    
+
+        .southern-theme {
+            background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20210907/pngtree-fresh-lixia-summer-summer-solstice-image_807664.jpg');
+            background-size: cover;
+            background-position: center;
+            color:black;
+            text-align: center;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            
+        }
+        /* Snowflake animation */
+        .snowflake {
+            position: absolute;
+            font-size: 20px;
+            color: white;
+            opacity: 0.8;
+            animation: snowfall 10s linear infinite;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-100px) translateX(calc(100vw * var(--random-x)));
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) translateX(calc(100vw * var(--random-x)));
+                opacity: 0; /* Fade out snowflake */
+            }
+        }
+
+    </style>
+    <script>
+        function loadHemisphere(hemisphere) {
+            if (hemisphere === 'northern') {
+                document.body.className = 'northern-theme';
+                document.body.innerHTML = `
+                    <h2>Northern Hemisphere</h2>
+                    <p>Welcome to the Northern Hemisphere! Here, the December solstice marks the beginning of winter, with snow-covered landscapes and long nights. Explore winter traditions, build snowmen, and enjoy cozy fireside moments.</p>
+                    <button onclick="location.reload()">Back to Menu</button>
+                `;
+                createSnowflakes(100); // Create 100 snowflakes for the effect
+            } else if (hemisphere === 'southern') {
+                document.body.className = 'southern-theme';
+                document.body.innerHTML = `
+                    <h2>Southern Hemisphere</h2>
+                    <p>Welcome to the Southern Hemisphere! Here, the December solstice signals the start of summer, with sunny beaches, blooming flowers, and vibrant outdoor activities. Enjoy barbecues, surfing, and picnics in the warm weather.</p>
+                    <button onclick="location.reload()">Back to Menu</button>
+                `;
+                createClouds(8);
+            }
+        }
+
+        function createSnowflakes(count) {
+            for (let i = 0; i < count; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                const randomX = Math.random() * 2 - 1; // Random horizontal direction (-1 to 1)
+                snowflake.style.setProperty('--random-x', randomX); // Set custom property for horizontal movement
+                snowflake.style.left = Math.random() * 100 + 'vw'; // Random horizontal position
+                snowflake.style.top = Math.random() * 10 + '%'; // Random top position to start falling
+                snowflake.style.animationDuration = Math.random() * 5 + 5 + 's'; // Vary speed of falling
+                snowflake.style.animationDelay = Math.random() * 5 + 's'; // Add delay for staggered start
+                snowflake.style.opacity = Math.random() * 0.5 + 0.5; // Vary opacity for a more natural look
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; // Vary snowflake size
+                snowflake.innerHTML = '&#10052;'; // Snowflake character
+                document.body.appendChild(snowflake);
+
+                snowflake.addEventListener('animationend', () => {
+                    snowflake.remove(); // Remove snowflakes after they fall
+                });
+            }
+        }
+
+        function createClouds(count) {
+            const usedPositions = [];
+
+            for (let i = 0; i < count; i++) {
+                let top, left, validPosition;
+
+                do {
+                    top = Math.random() * 20 + 5; // Restrict to top 5% to 25% of viewport
+                    left = Math.random() * 90; // Horizontal position: 0% to 90%
+                    validPosition = !usedPositions.some(
+                        ([prevTop, prevLeft]) =>
+                            Math.abs(prevTop - top) < 5 && Math.abs(prevLeft - left) < 10
+                    );
+                } while (!validPosition);
+
+                usedPositions.push([top, left]);
+
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud');
+                cloud.style.width = Math.random() * 100 + 50 + 'px';
+                cloud.style.height = Math.random() * 60 + 40 + 'px';
+                cloud.style.top = top + 'vh';
+                cloud.style.left = left + 'vw';
+                cloud.style.animationDuration = Math.random() * 10 + 15 + 's';
+                document.body.appendChild(cloud);
+
+                cloud.addEventListener('animationend', () => {
+                    cloud.remove();
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="menu">
+        <h2>Choose a Hemisphere</h2>
+        <button onclick="loadHemisphere('northern')">Northern Hemisphere</button>
+        <button onclick="loadHemisphere('southern')">Southern Hemisphere</button>
+    </div>
+</body>
+</html>
